@@ -1,5 +1,9 @@
-html,
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* html,
 body,
 #root {
-  @apply bg-neutral-800;
-}
+  @apply bg-neutral-800 text-white box-border;
+} */
