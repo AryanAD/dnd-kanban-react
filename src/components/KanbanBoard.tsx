@@ -64,7 +64,8 @@ const KanbanBoard = () => {
             {activeColumn && (
               <ColumnContainer
                 column={activeColumn}
-                deleteColumn={handleDeleteColumn}
+                handleDeleteColumn={handleDeleteColumn}
+                handleUpdateColumn={handleUpdateColumn}
               />
             )}
           </DragOverlay>,
