@@ -7,3 +7,15 @@ body,
 #root {
   @apply box-border text-white bg-neutral-900;
 }
+
+::-webkit-scrollbar {
+  @apply w-1;
+}
+
+::-webkit-scrollbar-:horizontal {
+  @apply h-1;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-rose-800 rounded-xl;
+}

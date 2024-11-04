@@ -45,7 +45,8 @@ const KanbanBoard = () => {
                 <ColumnContainer
                   key={col.id}
                   column={col}
-                  deleteColumn={handleDeleteColumn}
+                  handleDeleteColumn={handleDeleteColumn}
+                  handleUpdateColumn={handleUpdateColumn}
                 />
               ))}
             </SortableContext>
@@ -88,6 +89,16 @@ const KanbanBoard = () => {
   function handleDeleteColumn(columnId: Id) {
     const updatedColumns = columns.filter((col) => col.id !== columnId);
     setColumns(updatedColumns);
+  }
+
+  function handleUpdateColumn(id: Id, title: string) {
+    const newCol = columns.map((col) => {
+      if (col.id !== id) return col;
+
+      return { ...col, title };
+    });
+
+    setColumns(newCol);
   }
 
   function handleDragStart(event: DragStartEvent) {
