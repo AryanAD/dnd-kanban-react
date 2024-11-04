@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import PlusIcon from "../icons/PlusIcon";
-import { Column, Id } from "../types";
+import { Column, Id, Task } from "../types";
 import ColumnContainer from "./ColumnContainer";
 import {
   DndContext,
@@ -17,6 +17,7 @@ import { createPortal } from "react-dom";
 const KanbanBoard = () => {
   const [columns, setColumns] = useState<Column[]>([]);
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
+  const [tasks, setTasks] = useState<Task[]>([]);
 
   const columnsId = useMemo(
     () => columns.map((column) => column.id),
@@ -45,8 +46,11 @@ const KanbanBoard = () => {
                 <ColumnContainer
                   key={col.id}
                   column={col}
+                  tasks={tasks.filter((task) => task.columnId === col.id)}
                   handleDeleteColumn={handleDeleteColumn}
                   handleUpdateColumn={handleUpdateColumn}
+                  handleCreateTask={handleCreateTask}
+                  handleDeleteTask={handleDeleteTask}
                 />
               ))}
             </SortableContext>
@@ -64,8 +68,11 @@ const KanbanBoard = () => {
             {activeColumn && (
               <ColumnContainer
                 column={activeColumn}
+                tasks={tasks}
                 handleDeleteColumn={handleDeleteColumn}
                 handleUpdateColumn={handleUpdateColumn}
+                handleCreateTask={handleCreateTask}
+                handleDeleteTask={handleDeleteTask}
               />
             )}
           </DragOverlay>,
@@ -103,7 +110,6 @@ const KanbanBoard = () => {
   }
 
   function handleDragStart(event: DragStartEvent) {
-    console.log("dragStart", event);
     if (event.active.data.current?.type === "Column") {
       setActiveColumn(event.active.data.current.column);
       return;
@@ -127,6 +133,19 @@ const KanbanBoard = () => {
       // swaps the data of active column with over column
       return arrayMove(columns, activeColIndex, overColIndex);
     });
+  }
+
+  function handleCreateTask(columnId: Id) {
+    const newTask: Task = {
+      id: generateId(),
+      columnId,
+      content: `Task ${tasks.length + 1}`,
+    };
+    setTasks([...tasks, newTask]);
+  }
+  function handleDeleteTask(id: Id) {
+    const newTask = tasks.filter((task) => task.id !== id);
+    setTasks(newTask);
   }
 };
 
