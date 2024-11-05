@@ -51,6 +51,7 @@ const KanbanBoard = () => {
                   handleUpdateColumn={handleUpdateColumn}
                   handleCreateTask={handleCreateTask}
                   handleDeleteTask={handleDeleteTask}
+                  handleUpdateTask={handleUpdateTask}
                 />
               ))}
             </SortableContext>
@@ -68,11 +69,14 @@ const KanbanBoard = () => {
             {activeColumn && (
               <ColumnContainer
                 column={activeColumn}
-                tasks={tasks}
+                tasks={tasks.filter(
+                  (task) => task.columnId === activeColumn.id
+                )}
                 handleDeleteColumn={handleDeleteColumn}
                 handleUpdateColumn={handleUpdateColumn}
                 handleCreateTask={handleCreateTask}
                 handleDeleteTask={handleDeleteTask}
+                handleUpdateTask={handleUpdateTask}
               />
             )}
           </DragOverlay>,
@@ -143,8 +147,18 @@ const KanbanBoard = () => {
     };
     setTasks([...tasks, newTask]);
   }
+
   function handleDeleteTask(id: Id) {
     const newTask = tasks.filter((task) => task.id !== id);
+    setTasks(newTask);
+  }
+
+  function handleUpdateTask(id: Id, content: string) {
+    const newTask = tasks.map((task) => {
+      if (task.id !== id) return task;
+
+      return { ...task, content };
+    });
     setTasks(newTask);
   }
 };

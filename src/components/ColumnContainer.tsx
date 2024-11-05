@@ -13,6 +13,7 @@ interface Props {
   handleUpdateColumn: (id: Id, title: string) => void;
   handleCreateTask: (columnId: Id) => void;
   handleDeleteTask: (id: Id) => void;
+  handleUpdateTask: (id: Id, content: string) => void;
 }
 
 const ColumnContainer = (props: Props) => {
@@ -23,6 +24,7 @@ const ColumnContainer = (props: Props) => {
     handleUpdateColumn,
     handleCreateTask,
     handleDeleteTask,
+    handleUpdateTask,
   } = props;
 
   const [editMode, setEditMode] = useState(false);
@@ -103,6 +105,7 @@ const ColumnContainer = (props: Props) => {
             key={task.id}
             task={task}
             handleDeleteTask={handleDeleteTask}
+            handleUpdateTask={handleUpdateTask}
           />
         ))}
       </div>

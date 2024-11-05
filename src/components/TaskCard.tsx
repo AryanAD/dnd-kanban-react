@@ -5,18 +5,49 @@ import { Task, Id } from "../types";
 interface TasksTypes {
   task: Task;
   handleDeleteTask: (id: Id) => void;
+  handleUpdateTask: (id: Id, content: string) => void;
 }
 
-const TaskCard: React.FC<TasksTypes> = ({ task, handleDeleteTask }) => {
+const TaskCard: React.FC<TasksTypes> = ({
+  task,
+  handleDeleteTask,
+  handleUpdateTask,
+}) => {
   const [mouseOver, setMouseOver] = useState(false);
+  const [editMode, setEditMode] = useState(false);
 
+  const toggleEditMode = () => {
+    setEditMode((prev) => !prev);
+    setMouseOver(false);
+  };
+
+  if (editMode) {
+    return (
+      <div className="bg-mainBgColor p-2.5 h-[100px] min-h-[100px] items-center flex text-left rounded-lg hover:ring-2 hover:ring-inset hover:ring-red-500 cursor-grab relative">
+        <textarea
+          autoFocus
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && e.shiftKey) toggleEditMode();
+          }}
+          className="w-full h-full text-lg text-white bg-transparent rounded-lg outline-none resize-none"
+          value={task.content}
+          placeholder="Enter task description"
+          onBlur={toggleEditMode}
+          onChange={(e) => handleUpdateTask(task.id, e.target.value)}
+        ></textarea>
+      </div>
+    );
+  }
   return (
     <div
-      className="bg-mainBgColor p-2.5 h-[100px] min-h-[100px] items-center flex text-left rounded-lg hover:ring-2 hover:ring-inset hover:ring-red-500 cursor-grab relative"
+      onClick={toggleEditMode}
+      className="bg-mainBgColor p-2.5 h-[100px] min-h-[100px] items-center flex text-left rounded-lg hover:ring-2 hover:ring-inset hover:ring-red-500 cursor-grab relative task"
       onMouseEnter={() => setMouseOver(true)}
       onMouseLeave={() => setMouseOver(false)}
     >
-      {task.content}
+      <p className="w-full h-[90%] my-auto overflow-y-auto overflow-x-hidden whitespace-pre-wrap">
+        {task.content}
+      </p>
       {mouseOver && (
         <button
           onClick={() => handleDeleteTask(task.id)}
