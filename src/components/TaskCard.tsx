@@ -1,6 +1,8 @@
 import { useState } from "react";
 import MinusIcon from "../icons/DeleteIcon";
 import { Task, Id } from "../types";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface TasksTypes {
   task: Task;
@@ -16,14 +18,51 @@ const TaskCard: React.FC<TasksTypes> = ({
   const [mouseOver, setMouseOver] = useState(false);
   const [editMode, setEditMode] = useState(false);
 
+  const {
+    setNodeRef,
+    attributes,
+    listeners,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: task?.id,
+    data: {
+      type: "Task",
+      task,
+    },
+    disabled: editMode,
+  });
+
+  const style = {
+    transition,
+    transform: CSS.Transform.toString(transform),
+  };
+
   const toggleEditMode = () => {
     setEditMode((prev) => !prev);
     setMouseOver(false);
   };
 
+  if (isDragging) {
+    return (
+      <div
+        ref={setNodeRef}
+        style={style}
+        className="bg-mainBgColor p-2.5 h-[100px] min-h-[100px] items-center flex text-left rounded-lg border-2 border-rose-500 cursor-grab relative opacity-50"
+      />
+    );
+  }
+
   if (editMode) {
     return (
-      <div className="bg-mainBgColor p-2.5 h-[100px] min-h-[100px] items-center flex text-left rounded-lg hover:ring-2 hover:ring-inset hover:ring-red-500 cursor-grab relative">
+      <div
+        ref={setNodeRef}
+        style={style}
+        {...attributes}
+        {...listeners}
+        className="bg-mainBgColor p-2.5 h-[100px] min-h-[100px] items-center flex text-left rounded-lg hover:ring-2 hover:ring-inset hover:ring-red-500 cursor-grab relative"
+      >
         <textarea
           autoFocus
           onKeyDown={(e) => {
@@ -40,6 +79,10 @@ const TaskCard: React.FC<TasksTypes> = ({
   }
   return (
     <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
       onClick={toggleEditMode}
       className="bg-mainBgColor p-2.5 h-[100px] min-h-[100px] items-center flex text-left rounded-lg hover:ring-2 hover:ring-inset hover:ring-red-500 cursor-grab relative task"
       onMouseEnter={() => setMouseOver(true)}
